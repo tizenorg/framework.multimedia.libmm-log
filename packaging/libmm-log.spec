@@ -1,7 +1,7 @@
 Name:       libmm-log
 Summary:    Multimedia Framework LOG Lib
 Version:    0.1.5
-Release:    7
+Release:    8
 Group:      Multimedia/Multimedia Framework
 License:    Apache-2.0
 Source0:    libmm-log-%{version}.tar.gz
@@ -28,6 +28,11 @@ make %{?jobs:-j%jobs}
 
 %install
 %make_install
+mkdir -p %{buildroot}/usr/share/license
+cp LICENSE %{buildroot}/usr/share/license/%{name}
+
+%files
+/usr/share/license/%{name}
 
 %files devel
 %defattr(-,root,root,-)
