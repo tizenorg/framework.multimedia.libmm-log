@@ -107,6 +107,7 @@
     case LOG_MIRACAST   : index = 23;break; \
     case LOG_WFD        : index = 24;break; \
     case LOG_STRRECORDER: index = 25;break; \
+    case LOG_JPEG_MSM8974: index = 26;break; \
     default             : index = 0; break; \
     }
 
@@ -136,8 +137,9 @@ static char * owner_res[] =
     "Media Call",
     "SessionMgr"
     "Miracast",
-    "WFD"
-    "Stream Recorder"
+    "WFD",
+    "Stream Recorder",
+    "Jpeg_msm8974"
  };
 
 static char * class_res[] =
@@ -208,6 +210,7 @@ void dump_logmanager(void)
     fprintf(stdout, " Class Bits Mask               : 0x%08X\n", pdata->class_mask);
     if (pdata->direction == LOG_DIRECTION_FILE)
     {
+        fprintf(stdout, " File name                     : %s\n", pdata->filename);
         fprintf(stdout, " File internal                 : %d\n", pdata->fd_count);
     }
 }

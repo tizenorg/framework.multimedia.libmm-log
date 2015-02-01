@@ -61,6 +61,7 @@ typedef enum {
     LOG_SESSIONMGR = 0x00800000,
     LOG_MIRACAST = 0x01000000,
     LOG_WFD = 0x02000000,
+    LOG_JPEG_MSM8974 = 0x03000000,
     LOG_UCM = 0x04000000,
     LOG_ALL        = 0xFFFFFFFF,
 }log_owner_t;
@@ -107,7 +108,6 @@ typedef enum {
 #define log_assert_dbg(condition)
 #endif
 
-#ifdef USE_DLOG
 #define _SLOG(class, tag , format, arg...) \
 	SLOG(class, tag ,format, ##arg)
 
@@ -116,7 +116,7 @@ typedef enum {
 
 #include <dlog.h>
 
-#define __log_by_owner(owner,class, msg, args...) \
+#define mm_log_by_owner(owner,class, msg, args...) \
 	do { \
 		switch(owner) { \
 		case LOG_AVSYSTEM    : _SLOG (class, "AVSYSTEM", msg, ##args); break; \
@@ -134,13 +134,14 @@ typedef enum {
 		case LOG_SESSIONMGR   : _SLOG (class, "MM_SESSIONMGR", msg, ##args); break; \
 		case LOG_MIRACAST   : _SLOG (class, "MM_MIRACAST", msg, ##args); break; \
 		case LOG_WFD   : _SLOG (class, "MM_WFD", msg, ##args); break; \
+		case LOG_JPEG_MSM8974   : _SLOG (class, "MM_JPEG_MSM8974", msg, ##args); break; \
 		case LOG_STRRECORDER : _SLOG (class, "MM_STREAMRECORDER", msg, ##args); break; \
 		case LOG_UCM : _SLOG (class, "UCM", msg, ##args); break; \
 		default             : _SLOG (class, "MM_UNKNOWN", msg, ##args); break; \
 		} \
 	} while(0)
 
-#define __secure_log_by_owner(owner,class, msg, args...) \
+#define mm_secure_log_by_owner(owner,class, msg, args...) \
 	do { \
 		switch(owner) { \
 		case LOG_AVSYSTEM    : _SECURE_SLOG (class, "AVSYSTEM", msg, ##args); break; \
@@ -163,80 +164,6 @@ typedef enum {
 		default             : _SECURE_SLOG (class, "MM_UNKNOWN", msg, ##args); break; \
 		} \
 	} while(0)
-
-#define log_print_rel(owner, class, msg, args...)  \
-	do {	\
-		if (class == LOG_CLASS_VERBOSE) {	\
-			__log_by_owner(owner,LOG_VERBOSE,msg,##args); \
-		} else if (class == LOG_CLASS_DEBUG) {	\
-			__log_by_owner(owner,LOG_DEBUG,msg,##args); \
-		} else if (class == LOG_CLASS_INFO) { \
-			__log_by_owner(owner,LOG_INFO,msg,##args); \
-		} else if (class == LOG_CLASS_WARNING) {	\
-			__log_by_owner(owner,LOG_WARN,msg,##args); \
-		} else if (class == LOG_CLASS_ERR) {	\
-			__log_by_owner(owner,LOG_ERROR,msg,##args); \
-		} else if (class == LOG_CLASS_CRITICAL) {	\
-			__log_by_owner(owner,LOG_FATAL,msg,##args); \
-		} else { \
-			__log_by_owner(owner,LOG_INFO,msg,##args); \
-		} \
-    } while(0)
-
-#define secure_log_print_rel(owner, class, msg, args...)  \
-	do {	\
-		if (class == LOG_CLASS_VERBOSE) {	\
-			__secure_log_by_owner(owner,LOG_VERBOSE,msg,##args); \
-		} else if (class == LOG_CLASS_DEBUG) {	\
-			__secure_log_by_owner(owner,LOG_DEBUG,msg,##args); \
-		} else if (class == LOG_CLASS_INFO) { \
-			__secure_log_by_owner(owner,LOG_INFO,msg,##args); \
-		} else if (class == LOG_CLASS_WARNING) {	\
-			__secure_log_by_owner(owner,LOG_WARN,msg,##args); \
-		} else if (class == LOG_CLASS_ERR) {	\
-			__secure_log_by_owner(owner,LOG_ERROR,msg,##args); \
-		} else if (class == LOG_CLASS_CRITICAL) {	\
-			__secure_log_by_owner(owner,LOG_FATAL,msg,##args); \
-		} else { \
-			__secure_log_by_owner(owner,LOG_INFO,msg,##args); \
-		} \
-    } while(0)
-
-#define  log_assert_rel(condition) \
-	do {	\
-		if (!(condition))	{ \
-			log_print_rel(0, LOG_CLASS_CRITICAL, "Assertion Fail", NULL);	\
-			abort();	\
-		}	\
-    } while(0)
-
-#else
-/**
- * This function print log.
- *
- * @param   owner       [in]    owner of log message.
- * @param   class       [in]    class of log message.
- * @param   msg         [in]    message to print.
- *
- * @remark  Print log message. Similar to printf except owner and class.
- * @see     log_print_dbg
- */
-#define log_print_rel(owner, class, msg, args...)  _log_print_rel((owner), (class), (msg), ##args)
-
-/**
- * This function assert condition.
- *
- * @param   condition       [in]    condition for check
- *
- * @remark  If condition is not true, system is aborted. Same to assert function.
- * @see     log_assert_dbg
- */
-#define  log_assert_rel(condition)  _log_assert_rel((condition), __FILE__, __LINE__)
-
-/* Do not directly use. */
-void _log_print_rel(log_owner_t vowner, log_class_t vclass, char *msg, ...);
-void _log_assert_rel(int condition, char *str, int line);
-#endif
 
 #ifdef __cplusplus
 }
