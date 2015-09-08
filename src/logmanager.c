@@ -104,6 +104,10 @@
     case LOG_SERVER     : index = 20;break; \
     case LOG_MEDIACALL  : index = 21;break; \
     case LOG_SESSIONMGR : index = 22;break; \
+    case LOG_MIRACAST   : index = 23;break; \
+    case LOG_WFD        : index = 24;break; \
+    case LOG_STRRECORDER: index = 25;break; \
+    case LOG_JPEG_MSM8974: index = 26;break; \
     default             : index = 0; break; \
     }
 
@@ -132,6 +136,10 @@ static char * owner_res[] =
     "Server",
     "Media Call",
     "SessionMgr"
+    "Miracast",
+    "WFD",
+    "Stream Recorder",
+    "Jpeg_msm8974"
  };
 
 static char * class_res[] =
